@@ -2,15 +2,15 @@ class ScanModel {
 
     int id;
     String type;
-    String value;
+    String valor;
 
     ScanModel({
         this.id,
         this.type,
-        this.value,
+        this.valor,
     }){
 
-      if ( this.value.contains('http')) {
+      if ( this.valor.contains('http')) {
 
         this.type = 'http';
       } else {
@@ -21,12 +21,12 @@ class ScanModel {
     factory ScanModel.fromJson(Map<String, dynamic> json) => new ScanModel(
         id: json["id"],
         type: json["type"],
-        value: json["value"],
+        valor: json["valor"],
     );
 
     Map<String, dynamic> toJson() => {
         "id": id,
         "type": type,
-        "value": value,
+        "valor": valor,
     };
 }

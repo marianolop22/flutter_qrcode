@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_qrcode/src/pages/addresses_page.dart';
 import 'package:flutter_qrcode/src/pages/maps_page.dart';
+import 'package:flutter_qrcode/src/providers/db_provider.dart';
 import 'package:qrcode_reader/qrcode_reader.dart';
 
 
@@ -83,8 +84,10 @@ class _HomePageState extends State<HomePage> {
   _scanQR() async{
 
     //geo:-34.66215909062592,-58.66868391474611
+    //https://www.google.com/
 
-    String futureString= '';
+    // String futureString= '';
+    String futureString= 'https://www.google.com/';
 
     // try {
 
@@ -96,11 +99,13 @@ class _HomePageState extends State<HomePage> {
 
     // }
 
-    // print ('future: $futureString' );
+    if ( futureString != null ) {
 
-    // if ( futureString != null ) {
-    //   print ('tenemos info');
-    // }
+      final scan = new ScanModel( valor: futureString );
+
+      DBProvider.db.newScan(scan);
+
+    }
 
   }
 
