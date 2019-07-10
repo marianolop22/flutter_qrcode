@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/rendering.dart';
+//import 'package:flutter/rendering.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
@@ -97,7 +97,7 @@ class DBProvider { //singleton, unica instancia para toda la app
   Future<List<ScanModel>> getScansByType ( String type ) async {
 
     final db = await database; //llama al get de arriba   
-    final response = await db.rawQuery( "SELECT * FROM Scans WHERE type = '${type}'" );
+    final response = await db.rawQuery( "SELECT * FROM Scans WHERE type = '$type'" );
 
     List<ScanModel> list = response.isNotEmpty 
         ? response.map( (item) => ScanModel.fromJson( item ) ).toList()

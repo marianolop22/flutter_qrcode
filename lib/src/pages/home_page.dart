@@ -1,7 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_qrcode/src/bloc/scans_bloc.dart';
+import 'package:flutter_qrcode/src/models/scan_model.dart';
 import 'package:flutter_qrcode/src/pages/addresses_page.dart';
 import 'package:flutter_qrcode/src/pages/maps_page.dart';
-import 'package:flutter_qrcode/src/providers/db_provider.dart';
+import 'package:flutter_qrcode/src/utils/utils.dart' as utils;
+//import 'package:flutter_qrcode/src/providers/db_provider.dart'; se quita para que se acceda desde el bloc
 import 'package:qrcode_reader/qrcode_reader.dart';
 
 
@@ -14,6 +19,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
+  final scansBloc = new ScansBloc();
+
   int currentIndex = 0;
 
   @override
@@ -24,7 +31,7 @@ class _HomePageState extends State<HomePage> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.delete_forever),
-            onPressed: () {},
+            onPressed: scansBloc.deleteAllScans,
           )
         ],
       ),
@@ -33,7 +40,7 @@ class _HomePageState extends State<HomePage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         child: Icon ( Icons.filter_center_focus),
-        onPressed: _scanQR,
+        onPressed: () => _scanQR(context),
         backgroundColor: Theme.of(context).primaryColor,
       ),
     );
@@ -81,7 +88,7 @@ class _HomePageState extends State<HomePage> {
 
   }
 
-  _scanQR() async{
+  _scanQR( BuildContext context) async{
 
     //geo:-34.66215909062592,-58.66868391474611
     //https://www.google.com/
@@ -102,9 +109,18 @@ class _HomePageState extends State<HomePage> {
     if ( futureString != null ) {
 
       final scan = new ScanModel( valor: futureString );
+      scansBloc.addScan(scan);
+      final scan2 = new ScanModel( valor: 'geo:-34.668872, -58.675131' );
+      scansBloc.addScan(scan2);
+      //DBProvider.db.newScan(scan);
 
-      DBProvider.db.newScan(scan);
-
+      if ( Platform.isIOS ) {
+        Future.delayed(Duration (milliseconds: 750), () {
+          utils.openScan(context, scan);
+        });
+      } else {
+       utils.openScan(context, scan);
+      }
     }
 
   }

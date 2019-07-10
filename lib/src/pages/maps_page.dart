@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_qrcode/src/providers/db_provider.dart';
+import 'package:flutter_qrcode/src/bloc/scans_bloc.dart';
+import 'package:flutter_qrcode/src/models/scan_model.dart';
+import 'package:flutter_qrcode/src/utils/utils.dart' as utils;
+//import 'package:flutter_qrcode/src/providers/db_provider.dart';
 
 class MapsPage extends StatelessWidget {
   //const MapsPage({Key key}) : super(key: key);
 
+  final scansBloc = new ScansBloc();
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<ScanModel>>(
-      future: DBProvider.db.getAllScans(),
+    return StreamBuilder<List<ScanModel>>(
+      stream: scansBloc.scansStream,
       // initialData: [],
       builder: (BuildContext context, AsyncSnapshot <List<ScanModel>>snapshot) {
 
@@ -37,8 +42,11 @@ class MapsPage extends StatelessWidget {
               title: Text(scans[i].valor),
               subtitle: Text( 'ID ${scans[i].id}' ),
               trailing: Icon (Icons.keyboard_arrow_right, color: Colors.grey,),
+              onTap: (){
+                utils.openScan(context, scans[i]);
+              },
             ),
-            onDismissed: ( direction ) => DBProvider.db.deleteScan( scans[i].id ),
+            onDismissed: ( direction ) => scansBloc.deleteScan( scans[i].id ),
           )
         );
 
