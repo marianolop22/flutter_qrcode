@@ -96,22 +96,18 @@ class _HomePageState extends State<HomePage> {
     // String futureString= '';
     String futureString= 'https://www.google.com/';
 
-    // try {
-
-    //   futureString = await new QRCodeReader().scan();
-      
-    // } catch (e) {
-
-    //   futureString = e.toString();
-
-    // }
+    try {
+      futureString = await new QRCodeReader().scan();
+    } catch (e) {
+      futureString = e.toString();
+    }
 
     if ( futureString != null ) {
 
       final scan = new ScanModel( valor: futureString );
       scansBloc.addScan(scan);
-      final scan2 = new ScanModel( valor: 'geo:-34.668872, -58.675131' );
-      scansBloc.addScan(scan2);
+      // final scan2 = new ScanModel( valor: 'geo:-34.668872, -58.675131' );
+      // scansBloc.addScan(scan2);
       //DBProvider.db.newScan(scan);
 
       if ( Platform.isIOS ) {

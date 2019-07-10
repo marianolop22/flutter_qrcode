@@ -5,33 +5,44 @@ import 'package:flutter_map/flutter_map.dart';
 
 import 'package:flutter_qrcode/src/models/scan_model.dart';
 
-class MapPage extends StatelessWidget {
+class MapPage extends StatefulWidget {
   // const MapPage({Key key}) : super(key: key);
+  
+  @override
+  _MapPageState createState() => _MapPageState();
+}
+
+class _MapPageState extends State<MapPage> {
+  final map = new MapController();
+
+  String mapType = 'mapbox.streets';
 
   @override
   Widget build(BuildContext context) {
 
     final ScanModel scan = ModalRoute.of(context).settings.arguments;
 
-    return Container(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Coordenadas QR'),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.my_location),
-              onPressed: (){},
-            )
-          ],
-        ),
-        body: _createFlutterMap( scan )
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Coordenadas QR'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.my_location),
+            onPressed: (){
+              map.move(scan.getLatLng(), 15);
+            },
+          )
+        ],
       ),
+      body: _createFlutterMap( scan ),
+      floatingActionButton: _createFloatingButton( context),
     );
   }
 
   Widget _createFlutterMap( ScanModel scan) {
 
     return FlutterMap(
+      mapController: map,
       options: MapOptions(
         center: scan.getLatLng(),
         zoom: 15
@@ -51,7 +62,7 @@ class MapPage extends StatelessWidget {
         '{id}/{z}/{x}/{y}@2x.png?access_token={accessToken}',
       additionalOptions: {
         'accessToken':'pk.eyJ1IjoibWFyaWFub2xvcDIyIiwiYSI6ImNqeHdkcHM5bjBlbWozbmxxN3NrN2hvYWYifQ.ju5b-A-_utroLcEgKUT5SA',
-        'id':'mapbox.streets' // tipos .streets .dark .light .outdoors, satellite
+        'id': mapType // tipos .streets .dark .light .outdoors, satellite
       }
     );
 
@@ -73,11 +84,36 @@ class MapPage extends StatelessWidget {
               color: 
               Theme.of(context).primaryColor, 
             ),
-
           )
         )
       ]
     );
+  }
+
+  Widget _createFloatingButton(BuildContext context) {
+
+    return FloatingActionButton(
+      child: Icon (Icons.repeat),
+      backgroundColor: Theme.of(context).primaryColor,
+      onPressed: (){
+
+        if ( mapType== 'mapbox.streets' ) {
+          mapType = 'mapbox.dark';
+        } else if ( mapType== 'mapbox.dark' ) {
+          mapType = 'mapbox.light';
+        } else if ( mapType== 'mapbox.light' ) {
+          mapType = 'mapbox.outdoors';
+        } else if ( mapType== 'mapbox.outdoors' ) {
+          mapType = 'mapbox.satellite';
+        } else {
+          mapType = 'mapbox.streets';
+        }
+
+        setState(() {});
+      },
+
+    );
+
 
 
   }
